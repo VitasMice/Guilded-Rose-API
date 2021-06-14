@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Available API endpoints to perform these actions:
+ * Create category (POST)                           /api/category
+ * Create item (POST)                               /api/item
+ * Update item (PUT/PATCH)                          /api/item/{id}
+ * Return all items based on category (GET)         /api/category-items/{category-id}
+ * Delete all items based on category (DELETE)      /api/category-items/{category-id}
+ */
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
