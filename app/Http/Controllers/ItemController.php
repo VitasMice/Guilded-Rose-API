@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ItemController extends Controller
 {
+
+    use ApiResponser;
+
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +29,7 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $request->validate([
             'category' => 'required|exists:category,id',
             'name'     => 'required|max:255',
@@ -33,7 +38,7 @@ class ItemController extends Controller
         ]);
         $item = Item::create($request->all());
             
-        return $item;
+        return $this->successResponse($item, Response::HTTP_CREATED);
     }
 
     /**
@@ -48,7 +53,7 @@ class ItemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update existing item
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -56,7 +61,22 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'category' => 'exists:category,id',
+            'name'     => 'max:255',
+            'value'    => 'gte:10|lte:100',
+            'quality'  => 'gte:-10|lte:50',
+        ]);
+
+        $item = Item::findOrFail($id);
+        $item->fill($request->all());
+
+        if ($item->isClean()) {
+            return $this->errorResponse("At least one value should change", Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
+        $item->save();
+        return $this->successResponse($item);
     }
 
     /**
