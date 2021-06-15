@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
-use App\Models\Category;
 
-class CategoryController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,9 +24,16 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // create a category
-        return Category::create($request->all());
+    {   
+        $request->validate([
+            'category' => 'required|exists:category,id',
+            'name'     => 'required|max:255',
+            'value'    => 'required|gte:10|lte:100',
+            'quality'  => 'required|gte:-10|lte:50',
+        ]);
+        $item = Item::create($request->all());
+            
+        return $item;
     }
 
     /**
@@ -37,9 +44,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        // 
-        $category = Category::find($id);
-        return $category;
+        //
     }
 
     /**
@@ -52,9 +57,6 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $category = Category::find($id);
-        $category->update($request->all());
-        return $category;
     }
 
     /**
@@ -66,6 +68,5 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
-        return Category::destroy($id);
     }
 }
