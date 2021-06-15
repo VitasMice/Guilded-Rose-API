@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Category;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,28 +24,20 @@ use App\Models\Category;
  * Delete all items based on category (DELETE)      /api/category-items/{category-id}
  */
 
-// Create category
-Route::post('/category');
+// Create category +
+Route::post('/category', 'CategoryController@store');
 
-// Create item
-Route::post('/item');
+// Create item +
+Route::post('/item', 'ItemController@store');
 
-// Update item
-Route::put('/item/{id}');
+// Update item +
+Route::put('/item/{id}', 'ItemController@update');
 
-// Return all items based on category
-Route::get('/category-items/{id}');
+// Return all items based on category +
+Route::get('/category-items/{id}', 'CategoryController@show');
 
 // Delete all items based on category
-Route::delete('/category-items/{id}');
-
-Route::get('/category', function(){
-    $Category = Category::create([
-        'name' => 'item'
-    ]);
-
-    return $Category;
-});
+Route::delete('/category-items/{id}', 'CategoryController@destroy');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
