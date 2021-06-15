@@ -9,6 +9,8 @@ class Item extends Model
 {
     use HasFactory;
 
+    protected $table = 'item';
+
     protected $fillable = [
         'category',
         'name',
