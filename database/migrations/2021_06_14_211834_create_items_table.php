@@ -15,14 +15,13 @@ class CreateItemsTable extends Migration
     {
         Schema::create('item', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category')
-                ->constrained('category')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->integer('category')->unsigned();
             $table->string('name');
             $table->float('value');
             $table->integer('quality');
             $table->timestamps();
+
+            $table->foreign('category')->references('id')->on('category')->onDelete('cascade');
         });
     }
 
