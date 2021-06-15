@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Traits\ApiResponser;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      *
@@ -18,28 +21,37 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new category
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        // create a category
-        return Category::create($request->all());
+        $request->validate([
+            'name' => 'required|max:255',
+        ]);
+        $category = Category::create($request->all());
+            
+        return $this->successResponse($category, Response::HTTP_CREATED);
     }
 
     /**
-     * Display the specified resource.
+     * Returns all items in requested category
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        // 
-        $category = Category::find($id);
-        return $category;
+        $category = Category::findOrFail($id); // Checks if category exist, if not fails and returns 404 error
+        $items    = Category::with('itemsInCategory')->find($id)->itemsInCategory;
+
+        if ($items->isEmpty()) {
+            return $this->errorResponse("There is no items in requested category", Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->successResponse($items);
     }
 
     /**
@@ -52,20 +64,20 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $category = Category::find($id);
-        $category->update($request->all());
-        return $category;
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deletes all items related by specified category id
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
-        return Category::destroy($id);
+        $category = Category::findOrFail($id); // Checks if category exist, if not fails and returns 404 error
+        $items    = Category::with('itemsInCategory')->find($id);
+        $items->delete();
+
+        return $this->successResponse($items);
     }
 }

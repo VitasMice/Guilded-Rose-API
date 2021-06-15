@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Rules\CustomSuffix;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,7 +33,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'category' => 'required|exists:category,id',
-            'name'     => 'required|max:255',
+            'name'     => ['required', 'max:255', new CustomSuffix],
             'value'    => 'required|gte:10|lte:100',
             'quality'  => 'required|gte:-10|lte:50',
         ]);
