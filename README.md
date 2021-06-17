@@ -7,7 +7,7 @@ Simple Laravel API for Guilded-Rose-Kata. API uses sqlite as database
 
 Setting up your development environment on your local machine :
 ```bash
-$ git clone https://github.com/guillaumebriday/laravel-blog.git
+$ git clone https://github.com/VitasMice/Guilded-Rose-API.git
 $ cd laravel-blog
 $ cp .env.example .env
 $ composer install
