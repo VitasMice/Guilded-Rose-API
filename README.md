@@ -11,6 +11,7 @@ $ git clone https://github.com/VitasMice/Guilded-Rose-API.git
 $ cd Guilded-Rose-API
 $ cp .env.example .env
 $ composer install
+$ artisan key:generate
 $ php artisan serve
 ```
 
